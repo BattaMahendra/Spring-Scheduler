@@ -17,7 +17,9 @@ public class NameScheduler {
 
     @Value("${spring.instances}")
     private String instance;
-
+    /*
+    * Please refer to this article for deeper info
+    * https://rieckpil.de/lock-scheduled-tasks-with-shedlock-and-spring-boot/*/
     @Scheduled(cron = "* * * * * *")
     @SchedulerLock(
             //name should be same for every instance otherwise unique number of tables will be created in DB
