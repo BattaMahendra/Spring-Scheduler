@@ -14,26 +14,31 @@ public class NameScheduler {
 
     @Autowired
     private ServletWebServerApplicationContext webServerAppCtxt;
-    @Scheduled(cron = "20 * * * * *")
+
+    @Value("${spring.instances}")
+    private String instance;
+
+    @Scheduled(cron = "* * * * * *")
     @SchedulerLock(
-            name = "${spring.application.name}_1",
-            lockAtLeastFor = "PT100s",
-            lockAtMostFor = "PT200s"
+            //name should be same for every instance otherwise unique number of tables will be created in DB
+            name = "${spring.application.name}_${spring.instances}",
+            lockAtLeastFor = "PT10s",
+            lockAtMostFor = "PT120s"
     )
     public void print2(){
-        System.out.println("Running Scheduler 1 at "+webServerAppCtxt.getWebServer().getPort()+
+        System.out.println("Running Scheduler "+instance+" at "+webServerAppCtxt.getWebServer().getPort()+
                 " at time "+ LocalDateTime.now());
     }
 
-    @Scheduled(cron = "20 * * * * *")
-    @SchedulerLock(
-            name = "${spring.application.name}_2",
-            lockAtLeastFor = "PT100s",
-            lockAtMostFor = "PT200s"
-    )
-    public void print(){
-        System.out.println("Running Scheduler 2 at "+webServerAppCtxt.getWebServer().getPort()+
-                " at time "+ LocalDateTime.now());
-    }
+//    @Scheduled(cron = "15 * * * * *")
+//    @SchedulerLock(
+//            name = "${spring.application.name}_${spring.instances}",
+//            lockAtLeastFor = "PT100s",
+//            lockAtMostFor = "PT200s"
+//    )
+//    public void print(){
+//        System.out.println("Running Scheduler 2 at "+webServerAppCtxt.getWebServer().getPort()+
+//                " at time "+ LocalDateTime.now());
+//    }
 
 }
